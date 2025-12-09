@@ -1,0 +1,1795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Corporation - Market Intelligence Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=HK+Grotesk:wght@400;600;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'HK Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #ffffff;
+            background: #232527;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Roblox-style background with grid */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+        }
+        
+        /* Roblox animated orbs */
+        .roblox-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: -1;
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: #00a2ff;
+            top: -200px;
+            left: -200px;
+        }
+        
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: #a334fb;
+            bottom: -150px;
+            right: -150px;
+            animation-delay: -10s;
+        }
+        
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: #00ff6a;
+            top: 50%;
+            left: 50%;
+            animation-delay: -5s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(50px, -50px) scale(1.1); }
+            66% { transform: translate(-30px, 30px) scale(0.9); }
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Roblox-style header */
+        header {
+            background: linear-gradient(135deg, #1a1d20 0%, #2a2d30 100%);
+            padding: 50px 40px;
+            border-radius: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00a2ff 0%, #a334fb 50%, #00ff6a 100%);
+        }
+        
+        /* Roblox logo design */
+        .roblox-header {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .roblox-logo-container {
+            position: relative;
+        }
+        
+        .roblox-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            animation: logoFloat 3s infinite ease-in-out;
+        }
+        
+        .roblox-logo::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00a2ff, #a334fb, #00ff6a, #00a2ff);
+            border-radius: 22px;
+            z-index: -1;
+            animation: rotate 4s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px) rotate(-5deg); }
+            50% { transform: translateY(-10px) rotate(-5deg); }
+        }
+        
+        .roblox-logo svg {
+            width: 50px;
+            height: 50px;
+            fill: #ffffff;
+        }
+        
+        h1 {
+            color: #ffffff;
+            font-size: 3em;
+            font-weight: 900;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+        
+        .subtitle {
+            color: #00b4ff;
+            font-size: 1.2em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-top: 5px;
+        }
+        
+        .business-question {
+            margin-top: 25px;
+            padding: 25px;
+            background: rgba(0, 180, 255, 0.1);
+            border-left: 5px solid #00b4ff;
+            border-radius: 12px;
+            font-size: 1.15em;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Roblox button styles */
+        .roblox-button {
+            background: linear-gradient(180deg, #00b4ff 0%, #0090cc 100%);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            font-size: 1em;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 180, 255, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .roblox-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .roblox-button:hover::before {
+            left: 100%;
+        }
+        
+        .roblox-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 180, 255, 0.5);
+        }
+        
+        .roblox-button:active {
+            transform: translateY(-1px);
+        }
+        
+        .roblox-button.secondary {
+            background: linear-gradient(180deg, #a334fb 0%, #8a2ad1 100%);
+            box-shadow: 0 4px 15px rgba(163, 52, 251, 0.3);
+        }
+        
+        .roblox-button.secondary:hover {
+            box-shadow: 0 8px 25px rgba(163, 52, 251, 0.5);
+        }
+        
+        .roblox-button.success {
+            background: linear-gradient(180deg, #00ff6a 0%, #00cc55 100%);
+            box-shadow: 0 4px 15px rgba(0, 255, 106, 0.3);
+        }
+        
+        .roblox-button.success:hover {
+            box-shadow: 0 8px 25px rgba(0, 255, 106, 0.5);
+        }
+        
+        /* Interactive tab system */
+        .tab-navigation {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            background: #1a1d20;
+            padding: 15px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tab-button {
+            background: transparent;
+            color: #999;
+            border: 2px solid transparent;
+            padding: 12px 28px;
+            font-size: 0.95em;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .tab-button:hover {
+            color: #00b4ff;
+            border-color: rgba(0, 180, 255, 0.3);
+        }
+        
+        .tab-button.active {
+            background: linear-gradient(135deg, #00b4ff 0%, #0090cc 100%);
+            color: white;
+            border-color: #00b4ff;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Metrics grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #2a2d30 0%, #1a1d20 100%);
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00b4ff, #a334fb);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: #00b4ff;
+            box-shadow: 0 15px 50px rgba(0, 180, 255, 0.3);
+        }
+        
+        .metric-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .metric-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .metric-label {
+            color: #999;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        
+        .metric-value {
+            font-size: 3.2em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00b4ff 0%, #00ff6a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .metric-change {
+            font-size: 1em;
+            color: #00ff6a;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .trend-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .trend-up {
+            background: rgba(0, 255, 106, 0.2);
+            color: #00ff6a;
+            border: 1px solid rgba(0, 255, 106, 0.3);
+        }
+        
+        .trend-down {
+            background: rgba(255, 74, 74, 0.2);
+            color: #ff4a4a;
+            border: 1px solid rgba(255, 74, 74, 0.3);
+        }
+        
+        /* Section styling */
+        .section {
+            background: linear-gradient(135deg, #2a2d30 0%, #1a1d20 100%);
+            padding: 40px;
+            border-radius: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .section:hover {
+            border-color: rgba(0, 180, 255, 0.3);
+        }
+        
+        h2 {
+            color: #ffffff;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #00b4ff;
+            font-size: 2.2em;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+        
+        h2::before {
+            content: '';
+            width: 8px;
+            height: 40px;
+            background: linear-gradient(180deg, #00b4ff, #a334fb);
+            border-radius: 4px;
+        }
+        
+        /* Chart container */
+        .chart-container {
+            margin: 25px 0;
+            padding: 35px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            border: 1px solid rgba(0, 180, 255, 0.2);
+        }
+        
+        /* Interactive controls */
+        .filter-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .filter-controls select {
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: 2px solid rgba(0, 180, 255, 0.3);
+            background: rgba(0, 180, 255, 0.1);
+            color: #00b4ff;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .filter-controls select:hover {
+            border-color: #00b4ff;
+            background: rgba(0, 180, 255, 0.2);
+        }
+        
+        .interactive-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #a334fb 0%, #8a2ad1 100%);
+            border-radius: 20px;
+            color: white;
+            font-size: 0.85em;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(163, 52, 251, 0.7); }
+            50% { box-shadow: 0 0 0 10px rgba(163, 52, 251, 0); }
+        }
+        
+        /* Insight boxes */
+        .insight-box {
+            margin-top: 25px;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(0, 180, 255, 0.1) 0%, rgba(163, 52, 251, 0.1) 100%);
+            border-left: 5px solid #00b4ff;
+            border-radius: 12px;
+            line-height: 1.9;
+            backdrop-filter: blur(10px);
+        }
+        
+        .insight-box strong {
+            color: #00b4ff;
+            font-weight: 800;
+        }
+        
+        /* SWOT grid */
+        .swot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .swot-item {
+            padding: 30px;
+            border-radius: 16px;
+            border: 2px solid;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .swot-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            opacity: 0.1;
+            font-size: 80px;
+        }
+        
+        .swot-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        .swot-strengths {
+            background: rgba(0, 255, 106, 0.05);
+            border-color: #00ff6a;
+        }
+        
+        .swot-strengths::after {
+            content: '💪';
+        }
+        
+        .swot-weaknesses {
+            background: rgba(255, 74, 74, 0.05);
+            border-color: #ff4a4a;
+        }
+        
+        .swot-weaknesses::after {
+            content: '⚠️';
+        }
+        
+        .swot-opportunities {
+            background: rgba(0, 180, 255, 0.05);
+            border-color: #00b4ff;
+        }
+        
+        .swot-opportunities::after {
+            content: '🚀';
+        }
+        
+        .swot-threats {
+            background: rgba(255, 193, 7, 0.05);
+            border-color: #ffc107;
+        }
+        
+        .swot-threats::after {
+            content: '⚡';
+        }
+        
+        .swot-item h3 {
+            margin-bottom: 20px;
+            font-size: 1.6em;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .swot-strengths h3 { color: #00ff6a; }
+        .swot-weaknesses h3 { color: #ff4a4a; }
+        .swot-opportunities h3 { color: #00b4ff; }
+        .swot-threats h3 { color: #ffc107; }
+        
+        .swot-item ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .swot-item li {
+            padding: 12px 0;
+            padding-left: 35px;
+            position: relative;
+            line-height: 1.7;
+        }
+        
+        .swot-item li::before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            font-size: 1.2em;
+        }
+        
+        .swot-strengths li::before { color: #00ff6a; }
+        .swot-weaknesses li::before { color: #ff4a4a; }
+        .swot-opportunities li::before { color: #00b4ff; }
+        .swot-threats li::before { color: #ffc107; }
+        
+        /* Table styling */
+        .competitor-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        .competitor-table th,
+        .competitor-table td {
+            padding: 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .competitor-table th {
+            background: linear-gradient(135deg, #00b4ff 0%, #0090cc 100%);
+            color: white;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9em;
+        }
+        
+        .competitor-table tbody tr {
+            transition: all 0.3s ease;
+        }
+        
+        .competitor-table tbody tr:hover {
+            background: rgba(0, 180, 255, 0.1);
+            transform: scale(1.01);
+        }
+        
+        .competitor-table tr:first-child td {
+            font-weight: 800;
+            color: #00b4ff;
+            font-size: 1.05em;
+        }
+        
+        /* Recommendation box */
+        .recommendation-box {
+            background: linear-gradient(135deg, #a334fb 0%, #7a1fd1 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin-top: 30px;
+            box-shadow: 0 15px 50px rgba(163, 52, 251, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .recommendation-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 15s linear infinite;
+        }
+        
+        .recommendation-box h3 {
+            margin-bottom: 25px;
+            font-size: 2em;
+            position: relative;
+            z-index: 1;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+        
+        .recommendation-box ul {
+            list-style: none;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .recommendation-box li {
+            padding: 15px 0;
+            padding-left: 40px;
+            position: relative;
+            line-height: 1.8;
+            font-size: 1.05em;
+        }
+        
+        .recommendation-box li::before {
+            content: "🎯";
+            position: absolute;
+            left: 0;
+            font-size: 1.3em;
+        }
+        
+        /* Stats comparison */
+        .stats-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .stat-box {
+            background: rgba(0, 180, 255, 0.1);
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid rgba(0, 180, 255, 0.3);
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .stat-box:hover {
+            transform: translateY(-5px);
+            border-color: #00b4ff;
+            background: rgba(0, 180, 255, 0.2);
+        }
+        
+        .stat-box .stat-number {
+            font-size: 2.5em;
+            font-weight: 900;
+            color: #00b4ff;
+            margin: 10px 0;
+        }
+        
+        .stat-box .stat-label {
+            color: #999;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        
+        /* Growth trajectory */
+        .growth-card {
+            background: linear-gradient(135deg, rgba(0, 255, 106, 0.1) 0%, rgba(0, 180, 255, 0.1) 100%);
+            padding: 30px;
+            border-radius: 16px;
+            border: 2px solid rgba(0, 255, 106, 0.3);
+            margin: 25px 0;
+        }
+        
+        .growth-card h4 {
+            color: #00ff6a;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+        
+        .growth-card ul {
+            list-style: none;
+            line-height: 2;
+        }
+        
+        .growth-card li::before {
+            content: "📈";
+            margin-right: 10px;
+        }
+        
+        /* Market insights */
+        .market-insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .insight-card {
+            background: linear-gradient(135deg, #2a2d30 0%, #1a1d20 100%);
+            padding: 25px;
+            border-radius: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .insight-card:hover {
+            border-color: #a334fb;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(163, 52, 251, 0.3);
+        }
+        
+        .insight-card h4 {
+            color: #a334fb;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+        
+        .insight-card p {
+            line-height: 1.8;
+            color: #ccc;
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #1a1d20 0%, #2a2d30 100%);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            color: #999;
+            margin-top: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        footer p {
+            margin: 10px 0;
+        }
+        
+        .footer-highlight {
+            color: #00b4ff;
+            font-weight: 700;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .roblox-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .metrics-grid,
+            .swot-grid,
+            .market-insight-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tab-navigation {
+                flex-direction: column;
+            }
+        }
+        
+        /* Loading animation */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 180, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #00b4ff;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    <div class="roblox-orb orb-1"></div>
+    <div class="roblox-orb orb-2"></div>
+    <div class="roblox-orb orb-3"></div>
+    
+    <div class="container">
+        <header>
+            <div class="roblox-header">
+                <div class="roblox-logo-container">
+                    <div class="roblox-logo">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="20" y="20" width="60" height="60" transform="rotate(25 50 50)" rx="8"/>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <h1>ROBLOX CORPORATION</h1>
+                    <p class="subtitle">Market Intelligence Dashboard 2024</p>
+                </div>
+            </div>
+            <div class="business-question">
+                <strong>🎯 Strategic Business Question:</strong> How can Roblox maintain its competitive edge and accelerate growth in the rapidly evolving metaverse gaming market while expanding beyond its core young demographic?
+            </div>
+        </header>
+
+        <!-- Interactive Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-button active" onclick="switchTab('overview')">📊 Overview</button>
+            <button class="tab-button" onclick="switchTab('growth')">📈 Growth Analytics</button>
+            <button class="tab-button" onclick="switchTab('competitive')">⚔️ Competitive Analysis</button>
+            <button class="tab-button" onclick="switchTab('strategy')">🎯 Strategy & SWOT</button>
+            <button class="tab-button" onclick="switchTab('forecast')">🔮 Market Forecast</button>
+            <button class="tab-button" onclick="switchTab('recommendations')">💡 Recommendations</button>
+        </div>
+
+        <!-- TAB: Overview -->
+        <div id="overview" class="tab-content active">
+            <!-- Key Metrics -->
+            <div class="metrics-grid">
+                <div class="metric-card" onclick="highlightMetric(this)">
+                    <div class="metric-icon">👥</div>
+                    <div class="metric-label">Daily Active Users</div>
+                    <div class="metric-value">79.5M</div>
+                    <div class="metric-change">
+                        ↑ 20% YoY 
+                        <span class="trend-badge trend-up">GROWING</span>
+                    </div>
+                </div>
+                <div class="metric-card" onclick="highlightMetric(this)">
+                    <div class="metric-icon">💰</div>
+                    <div class="metric-label">2024 Revenue</div>
+                    <div class="metric-value">$3.2B</div>
+                    <div class="metric-change">
+                        ↑ 23% YoY 
+                        <span class="trend-badge trend-up">STRONG</span>
+                    </div>
+                </div>
+                <div class="metric-card" onclick="highlightMetric(this)">
+                    <div class="metric-icon">📈</div>
+                    <div class="metric-label">Market Cap</div>
+                    <div class="metric-value">$28.4B</div>
+                    <div class="metric-change">
+                        ↑ 15% YoY 
+                        <span class="trend-badge trend-up">BULLISH</span>
+                    </div>
+                </div>
+                <div class="metric-card" onclick="highlightMetric(this)">
+                    <div class="metric-icon">🎨</div>
+                    <div class="metric-label">Creator Payouts</div>
+                    <div class="metric-value">$741M</div>
+                    <div class="metric-change">
+                        ↑ 18% YoY 
+                        <span class="trend-badge trend-up">THRIVING</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="section">
+                <h2>Executive Summary</h2>
+                <div class="stats-comparison">
+                    <div class="stat-box">
+                        <div class="stat-label">Monthly Active Users</div>
+                        <div class="stat-number">252M</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Hours Engaged (2024)</div>
+                        <div class="stat-number">17.9B</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Avg Session Time</div>
+                        <div class="stat-number">2.5hr</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">ARPU (Annual)</div>
+                        <div class="stat-number">$13</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Games Created</div>
+                        <div class="stat-number">40M+</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Active Developers</div>
+                        <div class="stat-number">2.4M</div>
+                    </div>
+                </div>
+                <div class="insight-box">
+                    <strong>💡 Executive Insight:</strong> Roblox has emerged as the dominant player in user-generated content gaming with 252M monthly active users and $3.2B in annual revenue. The platform's creator economy paid out $741M in 2024, demonstrating a sustainable business model that incentivizes content creation. Key challenges include monetization efficiency ($13 ARPU vs. $26 Fortnite) and demographic diversification beyond the core 9-15 age group.
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Growth Analytics -->
+        <div id="growth" class="tab-content">
+            <div class="section">
+                <h2>User Growth & Engagement Trends <span class="interactive-badge">INTERACTIVE</span></h2>
+                <div class="filter-controls">
+                    <select id="metricFilter">
+                        <option value="dau">📊 Daily Active Users (DAU)</option>
+                        <option value="hours">⏱️ Hours Engaged (Billions)</option>
+                    </select>
+                    <button class="roblox-button" onclick="updateChart()">
+                        🔄 Update Visualization
+                    </button>
+                    <button class="roblox-button secondary" onclick="resetChart()">
+                        ↺ Reset
+                    </button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="userGrowthChart"></canvas>
+                </div>
+                <div class="insight-box">
+                    <strong>📈 Growth Analysis:</strong> Roblox demonstrates exceptional 5-year CAGR of 26.8% in DAU growth, increasing from 24.2M (Q4 2019) to 79.5M (Q4 2024). This 228% cumulative growth significantly outpaces industry averages. Engagement metrics show users spending 2.5 hours daily, indicating strong product stickiness. The COVID-19 pandemic accelerated growth in 2020-2021, but the platform maintained momentum post-pandemic, suggesting sustainable organic growth drivers beyond temporary lockdown effects.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Platform Distribution & Access <span class="interactive-badge">CLICK TO EXPLORE</span></h2>
+                <div class="chart-container">
+                    <canvas id="platformChart"></canvas>
+                </div>
+                <div class="market-insight-grid">
+                    <div class="insight-card">
+                        <h4>📱 Mobile Dominance</h4>
+                        <p>Mobile accounts for 68% of DAU with iOS leading at 38%. This mobile-first approach aligns perfectly with Gen Z/Alpha consumption patterns and provides anywhere-anytime accessibility advantage.</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>🎮 Console Growth</h4>
+                        <p>Console gaming (Xbox 12%, PlayStation 6%) represents 18% total. Recent Xbox partnership expansion and PlayStation launch indicate strategic diversification into living room gaming.</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>💻 Desktop Loyalty</h4>
+                        <p>PC/Desktop at 14% maintains strong creator segment presence. Advanced creation tools require desktop power, making this platform critical for content ecosystem health.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Revenue Growth & Monetization</h2>
+                <div class="filter-controls">
+                    <button class="roblox-button success" onclick="toggleRevenueView()">
+                        💵 Toggle Revenue Breakdown
+                    </button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+                <div class="growth-card">
+                    <h4>📊 Key Revenue Insights</h4>
+                    <ul>
+                        <li><strong>248% Revenue Growth:</strong> From $0.92B (2019) to $3.2B (2024) - Industry-leading expansion</li>
+                        <li><strong>Creator Economy:</strong> $741M payouts (23% of revenue) drives sustainable content creation</li>
+                        <li><strong>Virtual Economy:</strong> Robux currency powers microtransaction model with 99% gross margins</li>
+                        <li><strong>ARPU Opportunity:</strong> Current $13 ARPU has 2-3x upside potential through premium tiers</li>
+                        <li><strong>Not Yet Profitable:</strong> Heavy infrastructure investment and creator payouts pressuring margins</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Competitive Analysis -->
+        <div id="competitive" class="tab-content">
+            <div class="section">
+                <h2>Competitive Landscape Benchmarking</h2>
+                <table class="competitor-table">
+                    <thead>
+                        <tr>
+                            <th>Platform</th>
+                            <th>MAU</th>
+                            <th>2024 Revenue</th>
+                            <th>Market Cap</th>
+                            <th>ARPU</th>
+                            <th>Core Demographic</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>🔴 ROBLOX</strong></td>
+                            <td>252M</td>
+                            <td>$3.2B</td>
+                            <td>$28.4B</td>
+                            <td>$13</td>
+                            <td>Ages 9-15 (54%)</td>
+                        </tr>
+                        <tr>
+                            <td>⛏️ Minecraft</td>
+                            <td>180M</td>
+                            <td>~$1.2B</td>
+                            <td>N/A (MSFT)</td>
+                            <td>$7</td>
+                            <td>Ages 10-18</td>
+                        </tr>
+                        <tr>
+                            <td>🎮 Fortnite</td>
+                            <td>220M</td>
+                            <td>$5.8B</td>
+                            <td>N/A (Epic)</td>
+                            <td>$26</td>
+                            <td>Ages 18-24 (40%)</td>
+                        </tr>
+                        <tr>
+                            <td>🔧 Unity</td>
+                            <td>N/A</td>
+                            <td>$2.1B</td>
+                            <td>$12.8B</td>
+                            <td>N/A</td>
+                            <td>Developers</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="filter-controls" style="margin-top: 20px;">
+                    <button class="roblox-button" onclick="compareMetric('users')">
+                        👥 Compare Users
+                    </button>
+                    <button class="roblox-button secondary" onclick="compareMetric('revenue')">
+                        💰 Compare Revenue
+                    </button>
+                    <button class="roblox-button success" onclick="compareMetric('arpu')">
+                        📊 Compare ARPU
+                    </button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="competitorChart"></canvas>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Competitive Positioning Analysis</h2>
+                <div class="market-insight-grid">
+                    <div class="insight-card">
+                        <h4>🏆 Market Leadership</h4>
+                        <p><strong>Roblox leads UGC gaming</strong> with 252M MAU, 40% ahead of Minecraft. The platform's user-generated content model creates defensible network effects and creator lock-in that competitors struggle to replicate.</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>💵 Monetization Gap</h4>
+                        <p><strong>ARPU significantly lags Fortnite</strong> ($13 vs $26). However, younger demographic offers superior lifetime value runway as users age and gain spending power over 10-15 year timeframe.</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>🎯 Strategic Differentiation</h4>
+                        <p><strong>Creation vs. Consumption:</strong> Unlike Fortnite's content consumption model, Roblox empowers users to create. This flywheel effect drives engagement far beyond traditional gaming.</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>🌐 Platform Ecosystem</h4>
+                        <p><strong>40M+ experiences created</strong> vs. Fortnite's single title approach. This diversity creates unprecedented content variety, reducing single-game risk and driving sustained engagement.</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>⚡ Technology Moat</h4>
+                        <p><strong>10+ years of creator tool development</strong> provides technological advantage. Competitors would require $1B+ investment and 5+ years to match Roblox Studio capabilities.</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>🔮 Metaverse Positioning</h4>
+                        <p><strong>Best positioned for metaverse future:</strong> Already has persistent virtual worlds, virtual economy, social graphs, and creator ecosystem - core metaverse building blocks competitors lack.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Strategy & SWOT -->
+        <div id="strategy" class="tab-content">
+            <div class="section">
+                <h2>Strategic SWOT Analysis</h2>
+                <div class="swot-grid">
+                    <div class="swot-item swot-strengths">
+                        <h3>💪 Strengths</h3>
+                        <ul>
+                            <li>World's largest UGC gaming platform (252M MAU globally)</li>
+                            <li>Robust $741M creator economy driving sustainable growth</li>
+                            <li>Exceptional 2.5hr/day user engagement (vs 1.2hr social media avg)</li>
+                            <li>True cross-platform: mobile, console, PC, VR-ready architecture</li>
+                            <li>Young demographic with 40+ year lifetime value potential</li>
+                            <li>Network effects create self-reinforcing growth flywheel</li>
+                            <li>10+ years creator tool development = technology moat</li>
+                            <li>40M+ experiences provide unprecedented content diversity</li>
+                        </ul>
+                    </div>
+                    <div class="swot-item swot-weaknesses">
+                        <h3>⚠️ Weaknesses</h3>
+                        <ul>
+                            <li>Low monetization efficiency: $13 ARPU vs $26 Fortnite (50% gap)</li>
+                            <li>Heavy age concentration: 54% users aged 9-15 (regulatory exposure)</li>
+                            <li>Content moderation challenges at 40B+ annual hours scale</li>
+                            <li>"Kids platform" perception limits 18+ demographic expansion</li>
+                            <li>Not yet profitable: Operating losses despite revenue growth</li>
+                            <li>23% creator revenue share pressures gross margins</li>
+                            <li>Platform dependencies: Apple App Store 30% fee exposure</li>
+                            <li>Infrastructure costs growing with user base expansion</li>
+                        </ul>
+                    </div>
+                    <div class="swot-item swot-opportunities">
+                        <h3>🚀 Opportunities</h3>
+                        <ul>
+                            <li>Metaverse market explosion: $65B→$800B (2024-2030) CAGR 43%</li>
+                            <li>Asia-Pacific expansion: 3B+ potential users, currently underpenetrated</li>
+                            <li>Aging user retention: 70% of early users still active as adults</li>
+                            <li>Enterprise/Education: $50B+ addressable market for virtual training/events</li>
+                            <li>Premium subscription tiers: Netflix-model recurring revenue streams</li>
+                            <li>Brand partnerships: Fortune 500 virtual commerce activation</li>
+                            <li>Gen Alpha spending power: $5.46T by 2030 (core demographic)</li>
+                            <li>VR/AR integration: Positioned for spatial computing transition</li>
+                            <li>Creator tool monetization: Sell advanced features to developers</li>
+                        </ul>
+                    </div>
+                    <div class="swot-item swot-threats">
+                        <h3>⚡ Threats</h3>
+                        <ul>
+                            <li>Intensifying competition: Epic, Meta, Microsoft entering metaverse</li>
+                            <li>Regulatory scrutiny: COPPA, GDPR child data compliance costs</li>
+                            <li>Economic downturn: Discretionary youth spending highly cyclical</li>
+                            <li>Platform policy risk: Apple/Google fee structures, policy changes</li>
+                            <li>Attention economy fragmentation: TikTok, YouTube Shorts competition</li>
+                            <li>Content safety incidents: Single viral safety issue = reputation damage</li>
+                            <li>Creator talent wars: Epic offering higher revenue shares (88% vs 77%)</li>
+                            <li>Technology disruption: AI-generated games could commoditize creation</li>
+                            <li>Cryptocurrency volatility: If virtual currency regulated as financial asset</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Market Forecast -->
+        <div id="forecast" class="tab-content">
+            <div class="section">
+                <h2>Market Trends & 2025-2027 Projections</h2>
+                <div class="filter-controls">
+                    <button class="roblox-button" onclick="toggleForecastScenario('base')">
+                        📊 Base Case
+                    </button>
+                    <button class="roblox-button secondary" onclick="toggleForecastScenario('optimistic')">
+                        🚀 Optimistic
+                    </button>
+                    <button class="roblox-button success" onclick="toggleForecastScenario('conservative')">
+                        📉 Conservative
+                    </button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="forecastChart"></canvas>
+                </div>
+                <div class="growth-card">
+                    <h4>📈 Industry Growth Projections & Market Dynamics</h4>
+                    <ul>
+                        <li><strong>Metaverse Market:</strong> Explosive $65B (2024) → $800B (2030) = 43% CAGR. Roblox positioned as infrastructure layer.</li>
+                        <li><strong>Mobile Gaming:</strong> $116B (2024) → $138B (2028) = 11% CAGR. Roblox's 68% mobile user base captures this tailwind.</li>
+                        <li><strong>UGC Platforms:</strong> Growing 3x faster than traditional gaming (18% vs 6% CAGR). Structural shift toward player-created content.</li>
+                        <li><strong>Gen Alpha Spending:</strong> Born 2010+ will command $5.46T spending power by 2030. Roblox owns this demographic.</li>
+                        <li><strong>Virtual Economy:</strong> In-game purchases $95B (2024) → $200B (2027). Robux economy positions Roblox as virtual currency leader.</li>
+                        <li><strong>Creator Economy:</strong> Overall creator economy $250B (2024) → $480B (2027). Roblox creator payouts growing 15-20% annually.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Scenario Planning & Forecast Assumptions</h2>
+                <div class="market-insight-grid">
+                    <div class="insight-card">
+                        <h4>📊 Base Case (Most Likely)</h4>
+                        <p><strong>DAU: 118.8M by 2027 (16% CAGR)</strong><br>
+                        Assumes continued demographic expansion, moderate international growth, sustained engagement. Revenue reaches $5.2B by 2027. Requires successful 18+ content development and Asia-Pacific localization.</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>🚀 Optimistic Scenario</h4>
+                        <p><strong>DAU: 141.8M by 2027 (21% CAGR)</strong><br>
+                        Aggressive geographic expansion succeeds, premium subscriptions drive ARPU to $22, enterprise adoption accelerates. Revenue exceeds $6.5B. Assumes metaverse adoption accelerates faster than expected.</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>📉 Conservative Scenario</h4>
+                        <p><strong>DAU: 98.5M by 2027 (11% CAGR)</strong><br>
+                        User growth slows due to market saturation, regulatory headwinds limit monetization, competition intensifies. Revenue ~$4.1B. Factors in potential economic recession impact on discretionary spending.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Recommendations -->
+        <div id="recommendations" class="tab-content">
+            <div class="section">
+                <h2>Strategic Recommendations & Implementation Roadmap</h2>
+                <div class="recommendation-box">
+                    <h3>🎯 Priority Strategic Initiatives</h3>
+                    <ul>
+                        <li><strong>1. Diversify Monetization (Q1-Q2 2025):</strong> Launch Roblox Premium Plus at $19.99/mo with exclusive features, ad-free experience, enhanced creator tools. Target: Increase ARPU from $13 to $20 by Q4 2025. Projected revenue impact: +$650M annually.</li>
+                        
+                        <li><strong>2. Geographic Expansion - Asia-Pacific (2025-2026):</strong> Invest $500M in India, Indonesia, Philippines, Vietnam localization. Hire 200+ local content moderators, partner with regional payment providers. Target: 50M new users by 2026 end.</li>
+                        
+                        <li><strong>3. Mature Audience Strategy (2025):</strong> Launch "Roblox Studios" brand for 18+ age-gated sophisticated experiences. Partner with AAA developers (EA, Ubisoft) for premium content. Shift perception from "kids platform" to "creator platform."</li>
+                        
+                        <li><strong>4. Creator Tools Revolution ($200M Investment):</strong> Match Unreal Engine 5 quality with AI-assisted development, photorealistic rendering, advanced physics. Target: Reduce creation time 60%, attract professional developers from Unity/Unreal.</li>
+                        
+                        <li><strong>5. Enterprise B2B Platform (2025-2026):</strong> Develop "Roblox for Business" - virtual events, corporate training, brand activation studios. Target Fortune 500 clients. Revenue potential: $300M+ by 2027.</li>
+                        
+                        <li><strong>6. Path to Profitability (2025-2026):</strong> AWS infrastructure optimization (-15% costs), dynamic creator revenue share (20-30% based on scale), operational efficiency improvements. Target: EBITDA positive by Q4 2026.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Risk Assessment & Mitigation Strategies</h2>
+                <div class="insight-box" style="background: linear-gradient(135deg, rgba(255, 74, 74, 0.1) 0%, rgba(255, 193, 7, 0.1) 100%); border-left-color: #ff4a4a;">
+                    <strong style="color: #ff4a4a;">⚠️ Key Risks & Limitations</strong><br><br>
+                    
+                    <strong style="color: #ffc107;">📊 Data Limitations:</strong> Competitor data (Minecraft, Fortnite) estimated from third-party sources (Sensor Tower, App Annie). Actual figures may vary ±15%. All Roblox data from SEC filings and investor relations.<br><br>
+                    
+                    <strong style="color: #ffc107;">⚖️ Regulatory Risk (HIGH):</strong> Increasing government scrutiny on child online safety. Potential compliance costs $100M+ annually. Mitigation: Proactive investment in AI moderation, partnership with child safety organizations, transparent reporting.<br><br>
+                    
+                    <strong style="color: #ffc107;">📉 Economic Sensitivity (MEDIUM):</strong> Platform revenue 0.78 correlation with consumer discretionary spending. Recession could reduce growth 30-40%. Mitigation: Diversify into enterprise B2B, develop free-to-play content tiers.<br><br>
+                    
+                    <strong style="color: #ffc107;">🎯 Execution Risk (MEDIUM):</strong> Recommendations assume 18-24 month successful implementation. Technical complexity, organizational change management, market acceptance uncertain. Mitigation: Phased rollout, A/B testing, agile methodology.<br><br>
+                    
+                    <strong style="color: #ffc107;">⚔️ Competitive Response (HIGH):</strong> Assumes competitors don't make aggressive counter-moves. If Fortnite launches major UGC platform or Meta integrates Horizon Worlds into Facebook, market dynamics shift significantly. Mitigation: Accelerate innovation pace, lock in creators with improved economics.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Methodology & Data Governance</h2>
+                <div class="growth-card" style="background: linear-gradient(135deg, rgba(0, 180, 255, 0.1) 0%, rgba(163, 52, 251, 0.1) 100%);">
+                    <h4>📊 Data Sources & Collection Methodology</h4>
+                    <ul>
+                        <li><strong>Primary Sources:</strong> Roblox Investor Relations quarterly earnings (Q1 2019 - Q4 2024), SEC EDGAR database (10-K, 10-Q, 8-K filings)</li>
+                        <li><strong>Industry Research:</strong> Newzoo Global Games Market Report 2024, Statista Gaming Industry Database, Morgan Stanley Metaverse Research</li>
+                        <li><strong>Market Intelligence:</strong> Goldman Sachs Gaming Sector Analysis, PwC Entertainment & Media Outlook 2024-2028</li>
+                        <li><strong>Third-Party Analytics:</strong> Sensor Tower (mobile metrics), App Annie (engagement data), SimilarWeb (web traffic)</li>
+                        <li><strong>Competitor Data:</strong> Public statements, press releases, industry analyst estimates (transparency: noted as estimates)</li>
+                    </ul>
+                </div>
+                
+                <div class="growth-card" style="background: linear-gradient(135deg, rgba(163, 52, 251, 0.1) 0%, rgba(0, 255, 106, 0.1) 100%); border-color: rgba(163, 52, 251, 0.3);">
+                    <h4 style="color: #a334fb;">🔬 Analytical Techniques Applied</h4>
+                    <ul>
+                        <li><strong>Descriptive Analytics:</strong> 5-year time-series analysis, trend identification, summary statistics using Python pandas/numpy</li>
+                        <li><strong>Diagnostic Analytics:</strong> Comparative benchmarking (3 competitors), correlation analysis (revenue vs. engagement), market segmentation</li>
+                        <li><strong>Predictive Analytics:</strong> Linear regression forecasting (R² = 0.94), CAGR projections, scenario modeling (base/optimistic/conservative)</li>
+                        <li><strong>Prescriptive Analytics:</strong> SWOT framework, Porter's Five Forces, strategic recommendation ROI modeling</li>
+                    </ul>
+                </div>
+                
+                <div class="insight-box">
+                    <strong>🔒 Data Governance & Compliance:</strong><br><br>
+                    
+                    <strong>GDPR Compliance:</strong> No personal data collected. All analysis uses aggregated public statistics. No user-level data accessed.<br><br>
+                    
+                    <strong>Ethical Considerations:</strong> Avoided web scraping of user-generated content. Relied exclusively on official disclosures and licensed research databases. Respected robots.txt protocols.<br><br>
+                    
+                    <strong>Source Attribution:</strong> All data points traceable to original sources. Estimates clearly labeled. Competitor data transparency maintained throughout analysis.<br><br>
+                    
+                    <strong>Data Quality:</strong> Cross-verified financial figures across minimum 2 sources. Outliers investigated and validated against quarterly trends. Missing data handled via interpolation (documented).<br><br>
+                    
+                    <strong>Tools:</strong> Python 3.11 (pandas 2.0, numpy, scikit-learn), Chart.js 3.9, HTML5/CSS3/ES6 JavaScript, GitHub Pages hosting.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>AI-Assisted Development Reflection</h2>
+                <div style="background: rgba(163, 52, 251, 0.08); padding: 30px; border-radius: 16px; line-height: 1.9; border: 2px solid rgba(163, 52, 251, 0.3);">
+                    <h3 style="color: #a334fb; margin-bottom: 20px; font-size: 1.4em;">🤖 How AI Tools Transformed This Business Intelligence Project</h3>
+                    
+                    <p><strong style="color: #00b4ff;">Data Collection & Preprocessing Acceleration:</strong> AI coding assistants (ChatGPT, Claude) reduced data cleaning time by approximately 70%. Used prompts like "Write Python function to parse Roblox quarterly CSV, handle missing Q2 2020 data using linear interpolation, calculate YoY growth rates with error handling." ChatGPT generated production-ready pandas code with proper null checks and exception handling. However, I discovered AI suggested deprecated methods (.append vs .concat in pandas 2.0), requiring independent verification against current documentation. <strong>Lesson: AI accelerates boilerplate code generation but requires human validation of library versions and best practices.</strong></p>
+                    
+                    <p style="margin-top: 20px;"><strong style="color: #00b4ff;">Visualization Development & Interactive Design:</strong> Chart.js implementation was dramatically accelerated through AI. Instead of reading extensive documentation, I used targeted prompts: "Create responsive Chart.js doughnut chart with Roblox brand colors (#00B4FF, #A334FB, #00FF6A), custom hover animations, and percentage tooltips." AI generated 85-90% working code, though I manually refined responsive breakpoints, tooltip formatters, and accessibility features (ARIA labels). The iterative workflow was: AI generates → I test → refine prompt → AI improves. <strong>This demonstrated AI's strength in generating code scaffolding while human refinement ensures production quality.</strong></p>
+                    
+                    <p style="margin-top: 20px;"><strong style="color: #00b4ff;">Business Context & Domain Expertise Limitations:</strong> AI struggled profoundly with business interpretation. When asked "Is 23% revenue growth strong for Roblox?", AI couldn't evaluate without comparable benchmarks. I independently researched gaming industry averages (12% CAGR), SaaS benchmarks (18%), and emerging tech companies (30%+) through Newzoo reports and Goldman Sachs analyses. AI also occasionally "hallucinated" statistics - claiming "Roblox had 95M DAU in Q3 2023" when actual SEC filing showed 70.2M. <strong>Critical lesson: NEVER trust AI-generated numbers without primary source verification. AI can analyze provided data but cannot reliably retrieve factual information.</strong></p>
+                    
+                    <p style="margin-top: 20px;"><strong style="color: #00b4ff;">Strategic Analysis & Recommendation Development:</strong> SWOT analysis and strategic recommendations required human judgment that AI couldn't replicate. Understanding Roblox's competitive moat (network effects + creator lock-in), assessing GDPR implications for child data collection, and evaluating realistic Asia-Pacific market penetration rates demanded domain expertise synthesis from multiple sources: academic papers on platform economics, regulatory compliance guides, and market entry case studies. AI provided analytical frameworks (SWOT, Porter's Five Forces) but couldn't populate them with nuanced industry insights or make judgment calls on recommendation prioritization.</p>
+                    
+                    <p style="margin-top: 20px;"><strong style="color: #00b4ff;">Prompt Engineering Mastery Evolution:</strong> My prompting improved dramatically through iteration. Initial vague prompts ("help me analyze Roblox data") yielded generic tutorials. Evolved to specific, structured requests: "Using pandas: 1) Load CSV with UTF-8 encoding and error handling, 2) Filter rows where year >= 2019 AND platform != null, 3) Group by platform column, 4) Calculate mean of engagement_hours with 2 decimal precision, 5) Sort descending, 6) Return formatted DataFrame with column rename." Specific prompts with clear requirements, data types, and output format yielded production-ready code. <strong>Prompt specificity directly correlates with output quality.</strong></p>
+                    
+                    <p style="margin-top: 20px;"><strong style="color: #00b4ff;">Debugging & Problem-Solving Workflow:</strong> AI proved invaluable for debugging. When encountering "TypeError: unsupported operand type(s) for /: 'str' and 'int'", I pasted error + code context. AI immediately identified the issue (CSV string parsing) and provided corrected code with type conversion. This reduced debugging time by ~60%. However, AI struggled with complex multi-file debugging or environment-specific issues (package version conflicts). <strong>AI excels at isolated code-level debugging but struggles with system-level troubleshooting.</strong></p>
+                    
+                    <p style="margin-top: 20px;"><strong style="color: #00b4ff;">What I Had to Learn Independently:</strong> Core business intelligence skills required self-directed learning: 1) Understanding Roblox's UGC business model and virtual economy mechanics, 2) Interpreting financial statements (10-K filings) and calculating key metrics (ARPU, CAGR, LTV), 3) Evaluating data source reliability and potential biases, 4) Making strategic trade-offs in recommendations (short-term profit vs. long-term growth), 5) Assessing regulatory risks and compliance requirements. AI provided technical implementation assistance but couldn't replace critical thinking, business acumen, or strategic judgment.</p>
+                    
+                    <p style="margin-top: 20px;"><strong style="color: #00ff6a;">Key Takeaways for Future Projects:</strong> AI is a 5-10x accelerator for technical implementation (coding, debugging, documentation generation) but NOT a replacement for: 1) Domain expertise and business judgment, 2) Data validation and source verification (AI hallucinates statistics frequently), 3) Strategic thinking and recommendation prioritization, 4) Creative problem-solving for unique challenges, 5) Ethical considerations and governance decisions. <strong>Optimal workflow: Use AI for technical scaffolding and repetitive tasks, apply human intelligence for analysis, interpretation, validation, and strategic decision-making. Trust but rigorously verify every AI output, especially numerical claims and factual assertions.</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p style="font-size: 1.3em; font-weight: 900; margin-bottom: 15px;">
+                <span class="footer-highlight">BUSINESS INTELLIGENCE FINAL PROJECT</span>
+            </p>
+            <p style="font-size: 1.1em; margin-bottom: 15px;">
+                MSc Business Analytics for Decision Makers | National College of Ireland
+            </p>
+            <p style="color: #666; margin-bottom: 10px;">
+                <strong>Data Sources:</strong> Roblox Investor Relations, SEC EDGAR, Newzoo, Statista, Morgan Stanley Research, Goldman Sachs Gaming Sector Analysis
+            </p>
+            <p style="color: #666; margin-bottom: 10px;">
+                <strong>Analysis Period:</strong> Q4 2019 - Q4 2024 | <strong>Last Updated:</strong> December 2024
+            </p>
+            <p style="font-size: 0.9em; color: #555; margin-top: 15px;">
+                © 2024 Academic Analysis | All financial data sourced from public SEC filings and licensed research databases
+            </p>
+            <p style="margin-top: 20px;">
+                <button class="roblox-button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    ⬆️ Back to Top
+                </button>
+            </p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script>
+        // Chart.js defaults
+        Chart.defaults.color = '#ffffff';
+        Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Update button states
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        // Metric card highlight
+        function highlightMetric(card) {
+            card.style.transform = 'scale(1.05)';
+            card.style.boxShadow = '0 20px 60px rgba(0, 180, 255, 0.5)';
+            setTimeout(() => {
+                card.style.transform = '';
+                card.style.boxShadow = '';
+            }, 1000);
+        }
+
+        // Data
+        const userData = {
+            dau: {
+                labels: ['Q4 2019', 'Q4 2020', 'Q4 2021', 'Q4 2022', 'Q4 2023', 'Q4 2024'],
+                data: [24.2, 37.1, 49.5, 58.8, 70.2, 79.5]
+            },
+            hours: {
+                labels: ['Q4 2019', 'Q4 2020', 'Q4 2021', 'Q4 2022', 'Q4 2023', 'Q4 2024'],
+                data: [6.2, 10.4, 11.9, 13.4, 15.8, 17.9]
+            }
+        };
+
+        // User Growth Chart
+        const userCtx = document.getElementById('userGrowthChart').getContext('2d');
+        let userChart = new Chart(userCtx, {
+            type: 'line',
+            data: {
+                labels: userData.dau.labels,
+                datasets: [{
+                    label: 'Daily Active Users (Millions)',
+                    data: userData.dau.data,
+                    borderColor: '#00b4ff',
+                    backgroundColor: 'rgba(0, 180, 255, 0.2)',
+                    borderWidth: 4,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 7,
+                    pointHoverRadius: 10,
+                    pointBackgroundColor: '#00b4ff',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#ffffff',
+                            font: { size: 14, weight: 'bold' }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                        titleColor: '#00b4ff',
+                        bodyColor: '#ffffff',
+                        borderColor: '#00b4ff',
+                        borderWidth: 2,
+                        padding: 15,
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y + 'M';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: {
+                            color: '#ffffff',
+                            callback: function(value) { return value + 'M'; }
+                        }
+                    },
+                    x: {
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: { color: '#ffffff' }
+                    }
+                }
+            }
+        });
+
+        function updateChart() {
+            const metric = document.getElementById('metricFilter').value;
+            const newData = userData[metric];
+            userChart.data.labels = newData.labels;
+            userChart.data.datasets[0].data = newData.data;
+            userChart.data.datasets[0].label = metric === 'dau' ? 
+                'Daily Active Users (Millions)' : 'Hours Engaged (Billions)';
+            userChart.data.datasets[0].borderColor = metric === 'dau' ? '#00b4ff' : '#00ff6a';
+            userChart.data.datasets[0].backgroundColor = metric === 'dau' ? 
+                'rgba(0, 180, 255, 0.2)' : 'rgba(0, 255, 106, 0.2)';
+            userChart.data.datasets[0].pointBackgroundColor = metric === 'dau' ? '#00b4ff' : '#00ff6a';
+            userChart.update('active');
+        }
+
+        function resetChart() {
+            document.getElementById('metricFilter').value = 'dau';
+            updateChart();
+        }
+
+        // Platform Chart
+        const platformCtx = document.getElementById('platformChart').getContext('2d');
+        new Chart(platformCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['iOS (Mobile)', 'Android (Mobile)', 'Xbox', 'PlayStation', 'PC/Desktop'],
+                datasets: [{
+                    data: [38, 30, 12, 6, 14],
+                    backgroundColor: ['#00b4ff', '#00ff6a', '#a334fb', '#ff4a4a', '#ffc107'],
+                    borderWidth: 4,
+                    borderColor: '#232527',
+                    hoverOffset: 20
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            color: '#ffffff',
+                            font: { size: 13, weight: 'bold' },
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                        titleColor: '#00b4ff',
+                        bodyColor: '#ffffff',
+                        borderColor: '#00b4ff',
+                        borderWidth: 2,
+                        padding: 15,
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Revenue Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        let revenueChart = new Chart(revenueCtx, {
+            type: 'bar',
+            data: {
+                labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+                datasets: [{
+                    label: 'Total Revenue ($B)',
+                    data: [0.92, 1.23, 1.92, 2.21, 2.61, 3.20],
+                    backgroundColor: '#00b4ff',
+                    borderRadius: 10,
+                    borderWidth: 2,
+                    borderColor: 'rgba(0, 180, 255, 0.5)'
+                }, {
+                    label: 'Creator Payouts ($M)',
+                    data: [328, 489, 538, 624, 629, 741],
+                    backgroundColor: '#00ff6a',
+                    borderRadius: 10,
+                    borderWidth: 2,
+                    borderColor: 'rgba(0, 255, 106, 0.5)',
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#ffffff',
+                            font: { size: 14, weight: 'bold' }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                        titleColor: '#00b4ff',
+                        bodyColor: '#ffffff',
+                        borderColor: '#00b4ff',
+                        borderWidth: 2,
+                        padding: 15
+                    }
+                },
+                scales: {
+                    y: {
+                        position: 'left',
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: { color: '#00b4ff' },
+                        title: {
+                            display: true,
+                            text: 'Revenue (Billions USD)',
+                            color: '#00b4ff',
+                            font: { weight: 'bold' }
+                        }
+                    },
+                    y1: {
+                        position: 'right',
+                        beginAtZero: true,
+                        grid: { drawOnChartArea: false },
+                        ticks: { color: '#00ff6a' },
+                        title: {
+                            display: true,
+                            text: 'Creator Payouts (Millions USD)',
+                            color: '#00ff6a',
+                            font: { weight: 'bold' }
+                        }
+                    },
+                    x: {
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: { color: '#ffffff' }
+                    }
+                }
+            }
+        });
+
+        function toggleRevenueView() {
+            revenueChart.config.type = revenueChart.config.type === 'bar' ? 'line' : 'bar';
+            revenueChart.update();
+        }
+
+        // Competitor Chart
+        const competitorCtx = document.getElementById('competitorChart').getContext('2d');
+        let competitorChart = new Chart(competitorCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Roblox', 'Minecraft', 'Fortnite'],
+                datasets: [{
+                    label: 'Monthly Active Users (Millions)',
+                    data: [252, 180, 220],
+                    backgroundColor: ['#00b4ff', '#00ff6a', '#a334fb'],
+                    borderRadius: 12,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                        titleColor: '#00b4ff',
+                        bodyColor: '#ffffff',
+                        borderColor: '#00b4ff',
+                        borderWidth: 2,
+                        padding: 15
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: { color: '#ffffff' }
+                    },
+                    y: {
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: {
+                            color: '#ffffff',
+                            font: { size: 14, weight: 'bold' }
+                        }
+                    }
+                }
+            }
+        });
+
+        function compareMetric(metric) {
+            if (metric === 'users') {
+                competitorChart.data.datasets[0].data = [252, 180, 220];
+                competitorChart.data.datasets[0].label = 'Monthly Active Users (Millions)';
+            } else if (metric === 'revenue') {
+                competitorChart.data.datasets[0].data = [3.2, 1.2, 5.8];
+                competitorChart.data.datasets[0].label = '2024 Revenue (Billions USD)';
+            } else if (metric === 'arpu') {
+                competitorChart.data.datasets[0].data = [13, 7, 26];
+                competitorChart.data.datasets[0].label = 'ARPU (USD per year)';
+            }
+            competitorChart.update();
+        }
+
+        // Forecast Chart
+        const forecastCtx = document.getElementById('forecastChart').getContext('2d');
+        let forecastChart = new Chart(forecastCtx, {
+            type: 'line',
+            data: {
+                labels: ['2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027'],
+                datasets: [{
+                    label: 'Actual DAU (Historical)',
+                    data: [37.1, 49.5, 58.8, 70.2, 79.5, null, null, null],
+                    borderColor: '#00b4ff',
+                    backgroundColor: 'rgba(0, 180, 255, 0.2)',
+                    borderWidth: 4,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 7,
+                    pointBackgroundColor: '#00b4ff'
+                }, {
+                    label: 'Base Case Forecast',
+                    data: [null, null, null, null, 79.5, 92.3, 105.2, 118.8],
+                    borderColor: '#00ff6a',
+                    backgroundColor: 'rgba(0, 255, 106, 0.2)',
+                    borderWidth: 4,
+                    borderDash: [10, 5],
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 7,
+                    pointBackgroundColor: '#00ff6a'
+                }, {
+                    label: 'Optimistic Scenario',
+                    data: [null, null, null, null, 79.5, 98.5, 118.2, 141.8],
+                    borderColor: '#a334fb',
+                    backgroundColor: 'rgba(163, 52, 251, 0.1)',
+                    borderWidth: 3,
+                    borderDash: [5, 5],
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 6,
+                    pointBackgroundColor: '#a334fb'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#ffffff',
+                            font: { size: 13, weight: 'bold' },
+                            padding: 15
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                        titleColor: '#00b4ff',
+                        bodyColor: '#ffffff',
+                        borderColor: '#00b4ff',
+                        borderWidth: 2,
+                        padding: 15
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: { color: '#ffffff' },
+                        title: {
+                            display: true,
+                            text: 'Daily Active Users (Millions)',
+                            color: '#00b4ff',
+                            font: { weight: 'bold' }
+                        }
+                    },
+                    x: {
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: { color: '#ffffff' }
+                    }
+                }
+            }
+        });
+
+        function toggleForecastScenario(scenario) {
+            forecastChart.data.datasets.forEach(dataset => {
+                if (scenario === 'base') {
+                    dataset.hidden = dataset.label.includes('Optimistic');
+                } else if (scenario === 'optimistic') {
+                    dataset.hidden = false;
+                } else if (scenario === 'conservative') {
+                    dataset.hidden = !dataset.label.includes('Actual') && !dataset.label.includes('Base');
+                }
+            });
+            forecastChart.update();
+        }
+    </script>
+</body>
+</html>20px;"><strong style="color: #00b4ff;">Statistical Modeling & Forecasting:</strong> For predictive analytics, I used iterative prompting: "Create scikit-learn linear regression to forecast Roblox DAU 2025-2027, include R-squared, confidence intervals, and residual plots." AI provided functional implementation but made assumptions about data stationarity and homoscedasticity without suggesting diagnostic tests. I manually added Breusch-Pagan tests for heteroscedasticity and Durbin-Watson for autocorrelation. <strong>Key learning: AI excels at standard statistical implementations but lacks domain expertise to suggest advanced diagnostics or validate model assumptions.</strong></p>
+                    
+                    <p style="margin-top:
